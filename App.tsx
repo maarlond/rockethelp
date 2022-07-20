@@ -9,14 +9,18 @@ import {
 import { Loading } from "./src/components/Loading";
 // import React from "react";
 // import { StyleSheet, Text, View } from "react-native";
-import { Home } from "./src/screens/Home";
+import { Routes } from "./src/routes";
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
   return (
     <NativeBaseProvider theme={THEME}>
-      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
-      {fontsLoaded ? <Home /> : <Loading />}
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      {fontsLoaded ? <Routes /> : <Loading />}
     </NativeBaseProvider>
   );
 }

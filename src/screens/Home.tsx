@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   HStack,
   IconButton,
@@ -7,10 +8,13 @@ import {
   Text,
   Heading,
   FlatList,
+  Center,
 } from "native-base";
-import { SignOut } from "phosphor-react-native";
+import { ChatTeardropText, SignOut } from "phosphor-react-native";
 import Logo from "../assets/logo_secondary.svg";
 import { Filter } from "../components/Filter";
+import { Button } from "../components/Button";
+
 import { Order, OrderProps } from "../components/Order";
 
 export function Home() {
@@ -19,14 +23,26 @@ export function Home() {
   );
   const [orders, setOrders] = useState<OrderProps[]>([
     {
-      id: "123",
+      id: "456",
       patrimony: "123456",
-      when: "18/07/2022 ás 10:00",
+      when: "20/07/2022 ás 12:48",
       status: "open",
     },
   ]);
 
+  const navigation = useNavigation();
   const { colors } = useTheme();
+
+  // Função para acessar a tela de cadastro
+  function handleNewOrder() {
+    navigation.navigate("new");
+  }
+
+  // Função para acessar a tela de detalhes
+  function handleOpenDetails(orderId: string) {
+    navigation.navigate("details", { orderId });
+  }
+
   return (
     <VStack flex={1} pb={6} bg="gray.700">
       <HStack
@@ -50,8 +66,8 @@ export function Home() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Heading color="gray.100">Meus chamados</Heading>
-          <Text color="gray.200">3</Text>
+          <Heading color="gray.100">Solicitações</Heading>
+          <Text color="gray.200">{orders.length}</Text>
         </HStack>
 
         <HStack space={3} mb={8}>
@@ -72,8 +88,24 @@ export function Home() {
         <FlatList
           data={orders}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <Order data={item} />}
+          renderItem={({ item }) => (
+            <Order data={item} onPress={() => handleOpenDetails(item.id)} />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: 100,
+          }}
+          ListEmptyComponent={() => (
+            <Center>
+              <ChatTeardropText color={colors.gray[300]} size={40} />
+              <Text color="gray.300" fontSize="xl" mt={6} textAlign="center">
+                Você não possui {"\n"} solicitações{" "}
+                {statusSelected === "open" ? "em aberto" : "finalizado"}
+              </Text>
+            </Center>
+          )}
         />
+        <Button title="Nova solicitação" onPress={handleNewOrder} />
       </VStack>
     </VStack>
   );
